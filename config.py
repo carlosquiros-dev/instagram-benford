@@ -29,14 +29,6 @@ BIGFIVE_SI_HUMANO = True     # si sale "Humano", hacer el Big Five (solo con per
 BASE = "https://www.instagram.com"
 OUTPUT_DIR = Path("output")
 
-
-
-
+"""Devuelve la carpeta del Escritorio del usuario actual."""
 def escritorio() -> Path:
-    """Devuelve la carpeta del Escritorio (con o sin OneDrive, en inglés o español)."""
-    home = Path.home()
-    for carpeta in [home / "Desktop", home / "OneDrive" / "Desktop",
-                    home / "Escritorio", home / "OneDrive" / "Escritorio"]:
-        if carpeta.is_dir():
-            return carpeta
-    return home
+    return Path.home() / "Desktop"
