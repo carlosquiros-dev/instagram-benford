@@ -1,0 +1,14 @@
+# Entorno virtual (librerías)
+.venv/
+__pycache__/
+
+# Configuración de IntelliJ
+.idea/
+*.iml
+
+# Secretos: cookies de sesión y API key
+cookies*.json
+.env
+
+# Datos extraídos
+output/
