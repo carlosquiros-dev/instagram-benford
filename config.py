@@ -20,7 +20,7 @@ CONSENTIMIENTO = "Análisis realizado con autorización de la titular de la cuen
 
 # --- Ley de Benford ---
 LISTA_BENFORD = "seguidos"   # "seguidos" o "seguidores": qué lista se analiza
-N_CUENTAS = 200              # cuentas de esa lista que se revisan (con paginación)
+N_CUENTAS = 20             # cuentas de esa lista que se revisan (con paginación)
 CHI_POSIBLE_BOT = 15.51      # chi-cuadrado mayor a esto: posible bot (95 %)
 CHI_BOT = 20.09              # chi-cuadrado mayor a esto: bot (99 %)
 BIGFIVE_SI_HUMANO = True     # si sale "Humano", hacer el Big Five (solo con permiso del titular)
