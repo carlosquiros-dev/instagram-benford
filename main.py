@@ -2,7 +2,9 @@
 
   python main.py plantilla               -> crea cookiesN.json en el proyecto
   python main.py benford --usuario X     -> descarga la lista, arma el Excel y clasifica
+                                            (si sale "Humano", sigue con el Big Five)
   python main.py excel --usuario X       -> rehace el Excel con los datos ya descargados
+  python main.py bigfive --usuario X     -> solo el Big Five: perfil + Gemini + imagen
 """
 import argparse
 import json
@@ -31,12 +33,30 @@ def analizar_benford(usuario: str, descargar: bool):
     resultado = generar_excel(datos)
 
     if resultado == "Humano" and BIGFIVE_SI_HUMANO:
-        print("Resultado: Humano -> siguiente paso: análisis Big Five (lo agregamos después).")
+        print("Resultado: Humano -> se continúa con el análisis Big Five.")
+        analizar_bigfive(usuario)
+
+
+def analizar_bigfive(usuario: str):
+    from bigfive.analisis import analizar
+    from bigfive.imagen import generar_imagen
+    from scraping.perfil import scrapear_perfil
+
+    try:
+        archivo = scrapear_perfil(usuario)
+        if archivo is None:
+            return
+        perfil = json.loads(archivo.read_text(encoding="utf-8"))
+        resultado = analizar(perfil)
+    except Exception as e:
+        print(f"Error en el Big Five: {e}")
+        return
+    generar_imagen(perfil, resultado)
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Detección de bots con la ley de Benford")
-    parser.add_argument("accion", choices=["plantilla", "benford", "excel"])
+    parser = argparse.ArgumentParser(description="Detección de bots con Benford y análisis Big Five")
+    parser.add_argument("accion", choices=["plantilla", "benford", "excel", "bigfive"])
     parser.add_argument("--usuario", default=USUARIO, help="cuenta a analizar (sin @)")
     args = parser.parse_args()
 
@@ -47,6 +67,8 @@ def main():
         analizar_benford(args.usuario, descargar=True)
     elif args.accion == "excel":
         analizar_benford(args.usuario, descargar=False)
+    elif args.accion == "bigfive":
+        analizar_bigfive(args.usuario)
 
 
 if __name__ == "__main__":

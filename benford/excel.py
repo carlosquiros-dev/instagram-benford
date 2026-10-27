@@ -84,7 +84,11 @@ def generar_excel(datos: dict) -> str:
     carpeta = escritorio() / f"Benford_{usuario}"
     carpeta.mkdir(exist_ok=True)
     archivo = carpeta / f"benford_{usuario}.xlsx"
-    libro.save(archivo)
     print(f"Chi-cuadrado: {chi:.2f} -> {resultado}")
-    print(f"Excel guardado en: {archivo}")
+    try:
+        libro.save(archivo)
+        print(f"Excel guardado en: {archivo}")
+    except PermissionError:
+        print(f"No se pudo guardar {archivo.name}: está abierto en Excel. Ciérralo y ejecuta: "
+              f"python main.py excel --usuario {usuario}")
     return resultado

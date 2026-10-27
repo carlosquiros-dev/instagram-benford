@@ -28,6 +28,20 @@ def cargar(archivo: Path) -> list[dict]:
     if faltan:
         raise ValueError(f"Faltan valores en {archivo.name}: {faltan}")
 
+
+    # ¿Cómo sabe qué datos agregar a cada cookie?
+    # No lo deduce: están escritos aquí mismo, a mano.
+    # Esta parte funciona como una receta que se repite para cada nombre de COOKIE_NAMES.
+    # En cada vuelta, "n" es el nombre de la cookie (por ejemplo, sessionid).
+    #   - name: es "n", el nombre de la cookie.
+    #   - value: se busca en cookies1.json con datos[n] (lo que copiaste de DevTools).
+    #   - domain, path y secure: se copian tal cual porque son iguales para las 5 cookies:
+    #       domain ".instagram.com" -> la cookie solo se envía a Instagram
+    #       path "/"                -> vale para todas las páginas del sitio
+    #       secure True             -> solo viaja por conexiones seguras (https)
+    # Es como un formulario con tres casillas ya impresas: solo se rellenan el nombre y el valor.
+
+
     return [
         {"name": n, "value": str(datos[n]).strip(),
          "domain": ".instagram.com", "path": "/", "secure": True}

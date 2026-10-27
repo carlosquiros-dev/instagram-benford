@@ -23,12 +23,13 @@ REINTENTOS = 4
 
 def preguntar_a_gemini(prompt: str) -> tuple[dict, dict]:
     """Envía el prompt y devuelve (respuesta como diccionario, tokens usados).
-    Si Gemini está saturado (429/500/503), espera y reintenta."""
+    Si Gemini está saturado o tarda demasiado (429/500/503/504), espera y reintenta."""
     load_dotenv()                                   # lee la API key del archivo .env
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
         raise RuntimeError("Falta GEMINI_API_KEY en el archivo .env")
-    cliente = genai.Client(api_key=api_key)
+    # timeout: si Gemini no responde en 120 s (en milisegundos), da error en vez de esperar para siempre
+    cliente = genai.Client(api_key=api_key, http_options=types.HttpOptions(timeout=120_000))
 
     for intento in range(REINTENTOS + 1):
         try:
@@ -45,7 +46,7 @@ def preguntar_a_gemini(prompt: str) -> tuple[dict, dict]:
                       "salida": getattr(uso, "candidates_token_count", 0) or 0}
             return json.loads(respuesta.text), tokens
         except errors.APIError as e:
-            if e.code not in (429, 500, 503) or intento == REINTENTOS:
+            if e.code not in (429, 500, 503, 504) or intento == REINTENTOS:
                 raise
             espera = 10 * 2 ** intento                       # 10, 20, 40, 80 segundos
             print(f"Gemini respondió {e.code}. Reintento {intento + 1}/{REINTENTOS} en {espera} s...")
