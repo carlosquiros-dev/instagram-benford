@@ -18,7 +18,7 @@ ENLACE_PERFIL = re.compile(r"/([A-Za-z0-9._]+)/")
 
 # JavaScript: baja hasta el final la parte de la ventana que tiene scroll
 BAJAR_LISTA = """() => {
-    const ventana = document.querySelector("div[role='dialog']");
+    const ventana = document.querySelector("[role='dialog']");
     if (!ventana) return;
     const cajas = [...ventana.querySelectorAll("div")].filter(e => e.scrollHeight > e.clientHeight + 10);
     if (cajas.length) cajas[cajas.length - 1].scrollTop = 1e9;
@@ -40,14 +40,15 @@ def contadores(page: Page, usuario: str) -> dict:
 def descargar_lista(page: Page, usuario: str) -> list[str]:
     """Abre la ventana de seguidos/seguidores y la baja página por página."""
     tipo = EN_INGLES[LISTA_BENFORD]
-    page.click(f"a[href='/{usuario}/{tipo}/']")
-    page.wait_for_selector("div[role='dialog']")
+    # El botón "2,451 following" no tiene dirección (href="#"): se busca por su texto
+    page.locator("header a", has_text=re.compile(tipo, re.I)).first.click()
+    page.wait_for_selector("[role='dialog']")
     pausa(page)
 
     nombres, pagina, rondas_sin_nuevos = [], 0, 0
     while len(nombres) < N_CUENTAS and rondas_sin_nuevos < 3:
         antes = len(nombres)
-        enlaces = page.eval_on_selector_all("div[role='dialog'] a[href]",
+        enlaces = page.eval_on_selector_all("[role='dialog'] a[href]",
                                             "els => els.map(a => a.getAttribute('href'))")
         for enlace in enlaces:
             m = ENLACE_PERFIL.fullmatch(enlace)
