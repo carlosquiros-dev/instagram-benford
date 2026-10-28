@@ -159,4 +159,4 @@ La carpeta `output/`, el archivo `.env` y los `cookies*.json` están en `.gitign
 
 ## Autor
 
-Daniel Quiroz — [@carlosquiros-dev](https://github.com/carlosquiros-dev) · Arquitectura de Software, séptimo semestre.
+Daniel Quiros — [@carlosquiros-dev](https://github.com/carlosquiros-dev) · Arquitectura de Software, séptimo semestre.
