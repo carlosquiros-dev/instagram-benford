@@ -3,7 +3,7 @@
 from pathlib import Path
 
 # --- Scraping ---
-USUARIO = "alondra_cgp"  # cuenta a estudiar (sin @)
+USUARIO = "usuario_ejemplo" # cuenta a estudiar (sin @)
 MAX_POSTS = 12  # máximo de publicaciones a extraer
 DELAY = 3  # pausa base entre acciones (segundos)
 #el tiempo del DELAY se aumenta cuando los post se aumentan también
